@@ -51,25 +51,27 @@ class World:
     def __init__(self):
         self.clear()
         # we've got listeners now!
-        self.listeners = list()
+        # self.listeners = list()
+        self.space = dict()
+        self.space['count'] = 0
         
-    def add_set_listener(self, listener):
-        self.listeners.append( listener )
+    # def add_set_listener(self, listener):
+        # self.listeners.append( listener )
 
     def update(self, entity, key, value):
         entry = self.space.get(entity,dict())
         entry[key] = value
         self.space[entity] = entry
-        self.update_listeners( entity )
+        # self.update_listeners( entity )
 
     def set(self, entity, data):
         self.space[entity] = data
-        self.update_listeners( entity )
+        # self.update_listeners( entity )
 
-    def update_listeners(self, entity):
-        '''update the set listeners'''
-        for listener in self.listeners:
-            listener(entity, self.get(entity))
+    # def update_listeners(self, entity):
+    #     '''update the set listeners'''
+    #     for listener in self.listeners:
+    #         listener(entity, self.get(entity))
 
     def clear(self):
         self.space = dict()
@@ -97,13 +99,18 @@ def hello():
 def read_ws(ws,client):
     '''A greenlet function that reads from the websocket and updates the world'''
     try:
+        # send initial state
+        send_all_json(myWorld.world())
         while True:
             msg = ws.receive()
-            print("WS RECV: %s" % msg)
-            # myWorld.set(1, msg['entity'])
+            # print("WS RECV: %s" % msg)
+            val = None
             if (msg is not None):
-                packet = json.loads(msg)
-                send_all_json( packet )
+                point = json.loads(msg)
+                key = list(point.keys())[0]
+                val = point[list(point.keys())[0]]
+                myWorld.space[key] = val
+                send_all_json( point )
             else:
                 break
     except:
@@ -122,6 +129,7 @@ def subscribe_socket(ws):
         while True:
             # block here
             msg = client.get()
+            packet = json.loads(msg)
             ws.send(msg)
     except Exception as e:# WebSocketError as e:
         print("WS Error %s" % e)

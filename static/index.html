@@ -24,6 +24,15 @@
   </head> 
   <body bgcolor="white" height="100%" width="100%"> 
     <div id="debug"></div>
+    <!-- design taken from my assn4 submission -->
+    <button onclick="changeColour('red')">Red</button>
+    <button onclick="changeColour('orange')">Orange</button>
+    <button onclick="changeColour('green')">Green</button>
+    <button onclick="changeColour('blue')">Blue</button>
+    <button onclick="changeColour('indigo')">Indigo</button>
+    <button onclick="changeColour('violet')">Violet</button>
+    <button onclick="changeColour('white')">White</button>
+    <p id="colour" style="color: white">Current Colour: white</p>
     <canvas id="c" width="100%" height="100%" style="-webkit-tap-highlight-color: transparent;"></canvas> 
 
     <script>
@@ -36,9 +45,16 @@ var H = canvas.height = window.innerHeight-50;
 var wscounter = 0;
 var socket;
 
+var currentColour = 'white';
+
+function changeColour(newColour) {
+    currentColour = newColour
+    document.getElementById("colour").innerHTML = 'Current Colour: ' + currentColour
+}
+
 function debug(str) {
     var debugDiv = document.getElementById('debug');
-    debugDiv.innerHTML = "" + str;
+    // debugDiv.innerHTML = "" + str;
 }
 debug("Test");
 
@@ -48,23 +64,23 @@ world = {};
 function drawCircle(context,entity) {
     with(context) {
         beginPath();                
-        lineWidth = 3;
+        lineWidth = 10;
         var x = entity["x"];
         var y = entity["y"];
         //moveTo(x,y);
         fillStyle = entity["colour"];
         strokeStyle = fillStyle;
-        arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
+        arc(x, y, (entity["radius"])?entity["radius"]:5, 0, 2.0 * Math.PI, false);  
         stroke();                                
     }
 }
 
 function prepEntity(entity) {
     if (!entity["colour"]) {
-        entity["colour"] = "#FF0000";
+        entity["colour"] = currentColour;
     }
     if (!entity["radius"]) {
-        entity["radius"] = 50;
+        entity["radius"] = 5;
     }
     return entity;
 }
@@ -81,6 +97,7 @@ function clearFrame() {
 // This actually draws the frame
 function renderFrame() {
     clearFrame();
+    // counter = world['count']
     for (var key in world) {
         var entity = world[key];
         drawCircle(context,prepEntity(entity));
@@ -234,16 +251,16 @@ mouse = (function() {
 // Add the application specific mouse listeners!
 //XXX: TODO Make these prettier!
 mouse.mousedowners.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'blue'});
+    addEntityWithoutName({'x':x,'y':y,'colour':currentColour});
 });
 
 mouse.mouseuppers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'red'});
+    addEntityWithoutName({'x':x,'y':y,'colour':currentColour});
 });
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'green',
-                          'radius':10});
+    addEntityWithoutName({'x':x,'y':y,'colour':currentColour,
+                          'radius':5});
 });
 
 
@@ -266,7 +283,13 @@ function wsSetup() {
         try {
             debug("WebSocket Recv:" + msg.data);
             var message = JSON.parse(msg.data);
-            world[Object.keys(message)[0]] = message[Object.keys(message)[0]]
+            // world[Object.keys(message)[0]] = message[Object.keys(message)[0]]
+            if (Object.keys(message).length === 1) {
+                world[Object.keys(message)[0]] = message[Object.keys(message)[0]]
+            } else {
+                world = message
+            }
+            
             
             // world[Object.keys(msg.data)[0]] = msg.
             //XXX: TODO What are you going to do here?
