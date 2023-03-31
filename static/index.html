@@ -21,6 +21,21 @@
         limitations under the License.
     "/>
     <script src="json2.js"></script>
+    <style>
+        button {
+            border-radius: 2em;
+            padding: 1em;
+            margin: 2em;
+            background-color: blanchedalmond;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+        body {
+            background-color: #151515;
+        }
+        html {
+            overflow-x: hidden
+        }
+    </style>
   </head> 
   <body bgcolor="white" height="100%" width="100%"> 
     <div id="debug"></div>
@@ -32,6 +47,7 @@
     <button onclick="changeColour('indigo')">Indigo</button>
     <button onclick="changeColour('violet')">Violet</button>
     <button onclick="changeColour('white')">White</button>
+    <button onclick="changeColour('rebeccapurple')">Rebecca Purple</button>
     <p id="colour" style="color: white">Current Colour: white</p>
     <canvas id="c" width="100%" height="100%" style="-webkit-tap-highlight-color: transparent;"></canvas> 
 
