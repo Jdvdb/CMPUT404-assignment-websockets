@@ -59,3 +59,10 @@ Contributors
 * Mark Galloway
 * Abram Hindle
 * Cole Mackenzie
+
+=============
+
+Example Code from CMPUT 404 was referenced and cited in the code.
+
+Also talked with a student in the class (Michaell Chow) about an odd issue when trying to
+send 'entity' as JSON. This is also mentioned in the code where it appears
